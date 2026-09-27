@@ -61,6 +61,7 @@ O GitHub Actions constrói a imagem com Docker Compose, inicia a API e verifica 
 ```text
 .
 ├── Dockerfile
+├── .gitignore
 ├── .dockerignore
 ├── .github/workflows/ci.yml
 ├── docker-compose.yml

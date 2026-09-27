@@ -1,0 +1,14 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi-poetry-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      APP_ENV: development
+      PYTHONUNBUFFERED: "1"
+    restart: unless-stopped

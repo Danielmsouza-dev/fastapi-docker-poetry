@@ -29,6 +29,9 @@ jobs:
           path: poetry.lock
           if-no-files-found: error
 
+      - name: Make generated lock available for versioning
+        run: python -c 'from pathlib import Path; import base64,gzip; print("POETRY_LOCK_PAYLOAD=" + base64.b64encode(gzip.compress(Path("poetry.lock").read_bytes(), mtime=0)).decode())'
+
       - name: Build and start the application
         run: docker compose up --build --detach
 

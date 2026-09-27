@@ -11,7 +11,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir "poetry==${POETRY_VERSION}"
 
 # Copiar primeiro os metadados permite reaproveitar a camada de dependências.
-COPY pyproject.toml ./
+COPY pyproject.toml poetry.lock ./
 RUN poetry install --only main --no-root
 
 COPY main.py ./

@@ -1,0 +1,50 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Poetry
+        run: python -m pip install --disable-pip-version-check "poetry==2.1.3"
+
+      - name: Resolve dependencies
+        run: poetry lock --no-interaction
+
+      - name: Save generated lock file
+        uses: actions/upload-artifact@v4
+        with:
+          name: poetry-lock
+          path: poetry.lock
+          if-no-files-found: error
+
+      - name: Build and start the application
+        run: docker compose up --build --detach
+
+      - name: Check API endpoints
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:8000/health >/dev/null; then
+              curl --fail http://localhost:8000/health | python -c 'import json,sys; assert json.load(sys.stdin)["status"] == "ok"'
+              curl --fail http://localhost:8000/ | python -c 'import json,sys; assert "message" in json.load(sys.stdin)'
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down --volumes

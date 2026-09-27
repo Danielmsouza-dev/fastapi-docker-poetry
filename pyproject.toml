@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "fastapi-docker-poetry"
+version = "0.1.0"
+description = "Exemplo didático de FastAPI com Docker Compose e Poetry"
+authors = ["Exemplo <exemplo@example.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.13"
+fastapi = "^0.115.12"
+uvicorn = { version = "^0.34.2", extras = ["standard"] }
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
